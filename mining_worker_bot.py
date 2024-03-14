@@ -53,7 +53,7 @@ async def show_links(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token("6508650560:AAF87aY-aLaMo7LkTYJcKuxtHZ-iPOdgtzs").build()
+    application = Application.builder().token("YOUR-BOT-TOKEN").build()
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", start))
