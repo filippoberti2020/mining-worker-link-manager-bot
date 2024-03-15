@@ -12,6 +12,10 @@ import logging
 
 from telegram import ForceReply, Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from tinydb import TinyDB, Query
+
+db = TinyDB('user_links.json')
+User = Query()
 
 # Enable logging
 logging.basicConfig(
@@ -28,26 +32,49 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     await update.message.reply_html(
-        rf"Hi {user.mention_html()}! Welcome to the Mining Worker Link Manager.",
-        reply_markup=ForceReply(selective=True),
+        rf"Hi {user.mention_html()}! Welcome to the Mining Worker Link Manager! You can easily add or save links by pasting them directly, or utilize one of the available commands. Feel free to start managing your links efficiently!",
     )
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
-    await update.message.reply_text("To manage your mining worker links, send them to me. You can also request your saved links using buttons.")
+    await update.message.reply_text('''Welcome to the Mining Worker Links Bot! Here are the available commands:
 
+/start - Start the bot
+/help - Get help and see all available commands
+/save_link - Add and save mining worker link when received from user
+/showlinks - Show saved mining worker links when requested by user
+/setdescription - Manage your mining worker links efficiently. Save, organize, and access your mining pool worker links easily.
+/setabouttext - Store and manage your mining worker links conveniently. Each link is associated with your Telegram ID for personalized tracking.
 
+Feel free to explore and manage your mining worker links with ease!''')
+
+# Modify save_link function to store link in the database
 async def save_link(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Save the user's mining worker link."""
-    # Implement saving the link to a database like TinyDB here
+    user_id = update.effective_user.id
+    link = update.message.text
+
+    # Store user ID and link in the database
+    db.insert({'user_id': user_id, 'link': link})
+    
     await update.message.reply_text("Your mining worker link has been saved successfully.")
 
-
+# Modify show_links function to retrieve and display saved links
 async def show_links(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Show the user's saved mining worker links."""
-    # Implement retrieving and displaying saved links here
-    await update.message.reply_text("Here are your saved mining worker links:")
+    user_id = update.effective_user.id
+
+    # Retrieve saved links for the user from the database
+    user_links = db.search(User.user_id == user_id)
+
+    if user_links:
+        message = "Here are your saved mining worker links:\n"
+        for link_data in user_links:
+            message += f"{link_data['link']}\n"
+    else:
+        message = "You have not saved any mining worker links yet."
+
+    await update.message.reply_text(message)
+
 
 
 def main() -> None:
