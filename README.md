@@ -4,8 +4,8 @@ This Telegram bot allows users to manage their mining worker links. Users can se
 
 ## Features
 
-- Save mining worker links with associated user ID
-- Display saved links with buttons for easy access
+- Save mining pool worker links
+- Display all the saved links
 - Option to name each saved link for better organization
 
 ## Getting Started
