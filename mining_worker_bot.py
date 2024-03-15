@@ -1,13 +1,3 @@
-#!/usr/bin/env python
-# pylint: disable=unused-argument
-# This program is dedicated to the public domain under the CC0 license.
-
-"""
-Telegram bot for managing mining worker links.
-
-This Telegram bot allows users to manage their mining worker links. Users can send one or more links of their mining pool workers, which are then stored in a database using TinyDB. Each link is associated with the user's Telegram user ID. Users can request their saved links using buttons and optionally give a name to each link.
-"""
-
 import logging
 
 from telegram import ForceReply, Update
@@ -42,22 +32,30 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 /start - Start the bot
 /help - Get help and see all available commands
-/save_link - Add and save mining worker link when received from user
+/save_link - Add and save mining pool worker link. To give a name to the link, format your message as follows(name(optional) spaced from link ): Name URL
 /showlinks - Show saved mining worker links when requested by user
-/setdescription - Manage your mining worker links efficiently. Save, organize, and access your mining pool worker links easily.
-/setabouttext - Store and manage your mining worker links conveniently. Each link is associated with your Telegram ID for personalized tracking.
 
 Feel free to explore and manage your mining worker links with ease!''')
 
 # Modify save_link function to store link in the database
 async def save_link(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.effective_user.id
-    link = update.message.text
+    message_text = update.message.text
 
-    # Store user ID and link in the database
-    db.insert({'user_id': user_id, 'link': link})
+    # Extract link and link name from the message text
+    link_parts = message_text.split(' ')
+    if len(link_parts) >= 2:
+        link_name = link_parts[0]
+        link = ' '.join(link_parts[1:])
+    else:
+        link_name = "Unnamed Link"
+        link = message_text
+
+    # Store user ID, link, and link name in the database
+    db.insert({'user_id': user_id, 'link': link, 'link_name': link_name})
     
     await update.message.reply_text("Your mining worker link has been saved successfully.")
+
 
 # Modify show_links function to retrieve and display saved links
 async def show_links(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -69,12 +67,11 @@ async def show_links(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     if user_links:
         message = "Here are your saved mining worker links:\n"
         for link_data in user_links:
-            message += f"{link_data['link']}\n"
+            message += f"Name: {link_data['link_name']}\nLink: {link_data['link']}\n\n"
     else:
         message = "You have not saved any mining worker links yet."
 
     await update.message.reply_text(message)
-
 
 
 def main() -> None:
