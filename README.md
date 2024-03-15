@@ -12,11 +12,10 @@ This Telegram bot allows users to manage their mining worker links. Users can se
 
 ## Usage
 
-## License
-
-FThis project is licensed under the MIT License - see the LICENSE file for details.
-
 ## Contributing
 
-We welcome contributions to improve the 20 20 20 Rule Timer GNOME extension. Please feel free to submit issues or pull requests.
+If you'd like to contribute or have suggestions, feel free to open an issue or submit a pull request.
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
