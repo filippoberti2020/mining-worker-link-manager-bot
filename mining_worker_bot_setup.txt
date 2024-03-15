@@ -1,0 +1,14 @@
+BOTFATHER SETUP INFO
+
+
+/setdescription
+Manage your mining worker links efficiently with this Telegram bot. Save, organize, and access your mining pool worker links easily. Customize each link with a name for better organization.
+
+/setabouttext
+This bot allows users to store and manage their mining worker links conveniently. Each link is associated with the user's Telegram ID, offering a personalized experience for tracking and accessing mining pool worker details.
+
+/setcommands
+/start - Start the bot
+/help - Get help and see all available commands 
+/save_link - Add and save mining worker link when received from user
+/showlinks - Show saved mining worker links when requested by user
